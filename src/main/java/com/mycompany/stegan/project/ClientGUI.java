@@ -36,10 +36,9 @@ abstract class ClientGUI extends JPanel implements ActionListener {
     private static JButton btnElabora = new JButton("Elabora");
     private JFileChooser fileChooser;
 
-    String imagePath = null;
-    String secretPath = null;
-    Long fileSize = 0L;
-
+    private File realFile = null;
+    private File secretFile = null;
+    
     public ClientGUI() throws MalformedURLException {
         setLayout(new FlowLayout());
         // set up a file picker component
@@ -50,7 +49,7 @@ abstract class ClientGUI extends JPanel implements ActionListener {
         // add the component to the frame
         add(btnElabora, BorderLayout.CENTER);
         add(btnImportaImmagine, BorderLayout.WEST);
-        add(btnImportaSegreto, BorderLayout.CENTER);
+        add(btnImportaSegreto, BorderLayout.EAST);
 
         btnImportaImmagine.addActionListener(new ActionListener() {
             @Override
@@ -58,11 +57,12 @@ abstract class ClientGUI extends JPanel implements ActionListener {
 
                 fileChooser.showOpenDialog(frame);
                 add(fileChooser);
+                String imagePath = null;
+                if((fileChooser.getSelectedFile().getAbsolutePath()) != null){
                 imagePath = fileChooser.getSelectedFile().getAbsolutePath();
-                File file = new File(imagePath);
-
-                float fileSize = file.length();
-                System.out.println("real file path = " + imagePath);
+                realFile = new File(imagePath);
+                }
+                System.out.println("Image path = " + imagePath);
             }
         });
         btnImportaSegreto.addActionListener(new ActionListener() {
@@ -70,8 +70,12 @@ abstract class ClientGUI extends JPanel implements ActionListener {
             public void actionPerformed(ActionEvent e) {
                 fileChooser.showOpenDialog(frame);
                 add(fileChooser);
+                
+                String secretPath = null;
+                if(null != fileChooser.getSelectedFile().getAbsolutePath()){
                 secretPath = fileChooser.getSelectedFile().getAbsolutePath();
-
+                secretFile = new File(secretPath);
+                }
                 System.out.println("secret path = " + secretPath);
             }
         });
@@ -80,7 +84,7 @@ abstract class ClientGUI extends JPanel implements ActionListener {
             public void actionPerformed(ActionEvent e) {
 
                 try {
-                    SteganService.steganService(secretPath, imagePath, fileSize);
+                    SteganService.retrieveSecret(realFile, secretFile);
                 } catch (Exception ex) {
                     Logger.getLogger(ClientGUI.class.getName()).log(Level.SEVERE, null, ex);
                 }
