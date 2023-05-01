@@ -84,7 +84,7 @@ abstract class ClientGUI extends JPanel implements ActionListener {
             public void actionPerformed(ActionEvent e) {
 
                 try {
-                    SteganService.retrieveSecret(realFile, secretFile);
+                    SteganService.retrieveSecret(secretFile);
                 } catch (Exception ex) {
                     Logger.getLogger(ClientGUI.class.getName()).log(Level.SEVERE, null, ex);
                 }

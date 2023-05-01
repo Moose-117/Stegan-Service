@@ -3,6 +3,7 @@ com\mycompany\stegan\project\SteganService.class
 com\mycompany\stegan\project\main.class
 com\mycompany\stegan\project\ClientGUI$2.class
 com\mycompany\stegan\project\ClientGUI.class
+com\mycompany\stegan\project\Utf8Check.class
 com\mycompany\stegan\project\ClientGUI$4.class
 com\mycompany\stegan\project\FileTypeFilter.class
 com\mycompany\stegan\project\ClientGUI$1.class
