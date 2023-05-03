@@ -21,6 +21,7 @@ import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import com.mycompany.stegan.project.SteganService;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -29,16 +30,16 @@ import com.mycompany.stegan.project.SteganService;
 abstract class ClientGUI extends JPanel implements ActionListener {
 
     public static JFrame frame = new JFrame("ClientGUI");
-
     private static JButton btnImportaImmagine = new JButton("importa immagine");
     private static JButton btnImportaSegreto = new JButton("importa segreto");
-
+    private static JButton btnCamuffaSegreto = new JButton("camuffaSegreto");
+    private static JButton btnEstraiSegreto = new JButton("estraiSegreto");
     private static JButton btnElabora = new JButton("Elabora");
-    private JFileChooser fileChooser;
 
+    private JFileChooser fileChooser;
     private File realFile = null;
     private File secretFile = null;
-    
+
     public ClientGUI() throws MalformedURLException {
         setLayout(new FlowLayout());
         // set up a file picker component
@@ -47,9 +48,10 @@ abstract class ClientGUI extends JPanel implements ActionListener {
         fileChooser = new JFileChooser();
 
         // add the component to the frame
-        add(btnElabora, BorderLayout.CENTER);
+        add(btnEstraiSegreto, BorderLayout.CENTER);
         add(btnImportaImmagine, BorderLayout.WEST);
         add(btnImportaSegreto, BorderLayout.EAST);
+        add(btnCamuffaSegreto, BorderLayout.WEST);
 
         btnImportaImmagine.addActionListener(new ActionListener() {
             @Override
@@ -58,39 +60,55 @@ abstract class ClientGUI extends JPanel implements ActionListener {
                 fileChooser.showOpenDialog(frame);
                 add(fileChooser);
                 String imagePath = null;
-                if((fileChooser.getSelectedFile().getAbsolutePath()) != null){
-                imagePath = fileChooser.getSelectedFile().getAbsolutePath();
-                realFile = new File(imagePath);
+                if ((fileChooser.getSelectedFile().getAbsolutePath()) != null) {
+                    imagePath = fileChooser.getSelectedFile().getAbsolutePath();
+                    realFile = new File(imagePath);
                 }
                 System.out.println("Image path = " + imagePath);
             }
         });
+
         btnImportaSegreto.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 fileChooser.showOpenDialog(frame);
                 add(fileChooser);
-                
+
                 String secretPath = null;
-                if(null != fileChooser.getSelectedFile().getAbsolutePath()){
-                secretPath = fileChooser.getSelectedFile().getAbsolutePath();
-                secretFile = new File(secretPath);
+                if (null != fileChooser.getSelectedFile().getAbsolutePath()) {
+                    secretPath = fileChooser.getSelectedFile().getAbsolutePath();
+                    secretFile = new File(secretPath);
                 }
                 System.out.println("secret path = " + secretPath);
             }
         });
-        btnElabora.addActionListener(new ActionListener() {
+
+        btnCamuffaSegreto.addActionListener(new ActionListener() {
+            String secret = "";
+
             @Override
             public void actionPerformed(ActionEvent e) {
-
                 try {
-                    SteganService.retrieveSecret(secretFile);
+                    SteganService.mergeSecret(realFile, secretFile);
                 } catch (Exception ex) {
                     Logger.getLogger(ClientGUI.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
 
+        btnEstraiSegreto.addActionListener(new ActionListener() {
+            String secret = "";
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    secret = SteganService.retrieveSecret(secretFile);
+                } catch (Exception ex) {
+                    Logger.getLogger(ClientGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                JOptionPane.showMessageDialog(frame.getComponent(0), "Segreto = \n" + secret);
+            }
+        });
     }
 
     public static void createAndShowGUI() throws MalformedURLException {
