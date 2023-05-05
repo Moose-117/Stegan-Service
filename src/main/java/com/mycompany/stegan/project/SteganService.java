@@ -4,6 +4,7 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.lang.invoke.MethodHandles;
+import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
@@ -21,16 +22,24 @@ import javax.imageio.ImageIO;
 import org.apache.commons.codec.binary.Hex;
 
 public class SteganService {
+
     public static void mergeSecret(File realImage, File secret) throws Exception {
         // below true flag tells OutputStream to append
         byte[] originalBytes = Files.readAllBytes(Paths.get(realImage.getAbsolutePath()));
         byte[] bytesToAppend = Files.readAllBytes(Paths.get(secret.getAbsolutePath()));
+
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         outputStream.write(originalBytes);
         outputStream.write(bytesToAppend);
         byte c[] = outputStream.toByteArray();
 
-        Files.write(realImage.toPath(), c);
+        byte[] copiedFileArray = new byte[(int) (realImage.length() + secret.length())];
+        InputStream is = null;
+
+        FileOutputStream os = new FileOutputStream("output.jpg");
+        os.write(c);
+
+//        Files.write(realImage.toPath(), c);
     }
 
     public static String retrieveSecret(File modifiedImage) throws Exception {
