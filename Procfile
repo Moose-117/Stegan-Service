@@ -1,0 +1,1 @@
+web: java -jar target/stegan-project-1.0-SNAPSHOT.jar
